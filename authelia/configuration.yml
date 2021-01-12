@@ -1,0 +1,58 @@
+#########################################################
+#               Authelia configuration                  #
+#########################################################
+
+host: 0.0.0.0
+port: 9091
+log_level: warn
+
+default_redirection_url: https://auth.cuken.net
+
+totp:
+  issuer: authelia.com
+  period: 30
+  skew: 1
+
+authentication_backend:
+  file:
+    path: /config/users_database.yml
+    password:
+      algorithm: argon2id
+      iterations: 1
+      salt_length: 16
+      parallelism: 8
+      memory: 1024
+
+access_control:
+  default_policy: deny
+  rules:
+    - domain: auth.cuken.net
+      policy: bypass
+    - domain: "*.cuken.net"
+      policy: two_factor
+    - domain: "cuken.net"
+      policy: two_factor
+
+session:
+  name: authelia_session
+  expiration: 3600
+  inactivity: 300
+  domain: cuken.net
+
+regulation:
+  max_retries: 3
+  find_time: 120
+  ban_time: 300
+
+storage:
+  local:
+    path: /config/db.sqlite3
+
+notifier:
+  filesystem:
+    filename: /config/notification.txt
+
+duo_api:
+  hostname: api-327ec0f8.duosecurity.com
+  integration_key: DIMMBWOBX56XV6PY4CQ0
+           
